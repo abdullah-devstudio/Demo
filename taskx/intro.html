@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>X Series · Cinematic Intro</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@500;600;700&display=swap');
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0F172A;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* MAIN APP (hidden behind intro) */
+    #main-app h1 {
+      font-size: clamp(2rem, 10vw, 4rem);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: #f0f0f0;
+    }
+    #main-app p {
+      margin-top: 1rem;
+      font-weight: 300;
+      color: #aaa;
+      max-width: 36rem;
+      letter-spacing: 0.02em;
+    }
+    .app-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 2rem;
+      justify-content: center;
+      margin-top: 2rem;
+      color: #888;
+      font-weight: 300;
+      font-size: 1rem;
+    }
+    .app-grid span {
+      background: #1a1a1a;
+      padding: 0.4rem 1.2rem;
+      border-radius: 30px;
+      letter-spacing: 0.03em;
+    }
+
+    /* INTRO OVERLAY – fullscreen, dark theme */
+    #intro-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: #0F172A;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      transition: opacity 0.4s ease;
+      opacity: 1;
+      will-change: opacity;
+      padding: 2rem;
+    }
+    #intro-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    /* LOGO STACK – centered */
+    .logo-stack {
+      position: relative;
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 16 / 9;
+      min-height: min(56vw, 520px);
+    }
+    .logo-item {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      will-change: opacity;
+      pointer-events: none;
+      text-align: center;
+      padding: 0.5rem;
+    }
+    .logo-item.active {
+      opacity: 1;
+      pointer-events: none;
+    }
+
+    /* responsive image logos */
+    .logo-item img {
+      display: block;
+      width: min(82vw, 520px);
+      max-width: 92%;
+      height: auto;
+      max-height: 34vh;
+      object-fit: contain;
+      background: transparent;
+      filter: none;
+      image-rendering: auto;
+    }
+    /* AD logo specific */
+    #logo-ad img {
+      width: min(78vw, 460px);
+      max-height: 30vh;
+    }
+    /* X Series logo */
+    #logo-xseries img {
+      width: min(88vw, 560px);
+      max-height: 34vh;
+    }
+    /* project logo */
+    #logo-project img {
+      width: min(82vw, 500px);
+      max-height: 32vh;
+    }
+
+    /* Theme-matched text captions */
+    .intro-caption {
+      margin-top: 0.7rem;
+      color: #E5E7EB;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: clamp(0.78rem, 1.9vw, 0.98rem);
+      font-weight: 500;
+      line-height: 1.45;
+      letter-spacing: 0.035em;
+      text-align: center;
+      max-width: 92%;
+    }
+    #logo-xseries .intro-caption {
+      color: #9CA3AF;
+      font-weight: 400;
+      font-size: clamp(0.72rem, 1.75vw, 0.92rem);
+    }
+
+    /* SKIP BUTTON – top right, minimal */
+    #skip-intro {
+      position: fixed;
+      top: 1.2rem;
+      right: 1.2rem;
+      z-index: 1100;
+      background: #22C55E;
+      border: 1px solid #22C55E;
+      color: #0F172A;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+      box-shadow: none;
+      text-transform: uppercase;
+      font-family: inherit;
+      pointer-events: auto;
+      outline: none;
+      user-select: none;
+      line-height: 1;
+      min-height: 2.2rem;
+      min-width: 5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #skip-intro:hover {
+      background: #16A34A;
+      color: #0F172A;
+      border-color: #16A34A;
+      transform: translateY(-1px);
+    }
+    #skip-intro:focus-visible {
+      outline: 2px solid #22C55E;
+      outline-offset: 2px;
+    }
+    @media (max-width: 480px) {
+      #skip-intro {
+        top: 0.8rem;
+        right: 0.8rem;
+        font-size: 0.7rem;
+        padding: 0.3rem 0.8rem;
+        min-width: 3.8rem;
+      }
+      .logo-item img {
+        width: 88vw;
+        max-width: 92%;
+        max-height: 30vh;
+      }
+      #logo-ad img {
+        width: 78vw;
+        max-height: 26vh;
+      }
+      #logo-xseries img {
+        width: 90vw;
+        max-height: 30vh;
+      }
+      #logo-project img {
+        width: 84vw;
+        max-height: 28vh;
+      }
+    }
+
+    @media (max-height: 520px) {
+      #intro-overlay { padding: 1rem; }
+      .logo-stack { min-height: 78vh; }
+      .logo-item img { max-height: 48vh; }
+      #logo-ad img, #logo-xseries img, #logo-project img { max-height: 42vh; }
+      .intro-caption { margin-top: 0.45rem; font-size: clamp(0.62rem, 2vw, 0.82rem); }
+    }
+
+    /* reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .logo-item {
+        transition-duration: 0.01ms !important;
+        transition: opacity 0.01ms ease !important;
+      }
+      #intro-overlay {
+        transition: opacity 0.01ms ease !important;
+      }
+      #skip-intro {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- INTRO OVERLAY -->
+  <div id="intro-overlay" role="presentation" aria-hidden="false">
+    <div class="logo-stack" id="logoStack">
+      <!-- 1. AD brand logo (using image) -->
+      <div id="logo-ad" class="logo-item">
+        <img src="https://i.supaimg.com/cae2bd2e-ef30-41e8-bf78-9645ed9e7fff/4cda4995-0ed9-4905-a3f0-9afb5fcb0c93.png"
+             alt="AbdullahDev Studio logo"
+            >
+        <span class="intro-caption">Presents</span>
+      </div>
+
+      <!-- 2. X Series logo (image) -->
+      <div id="logo-xseries" class="logo-item">
+        <img src="https://i.supaimg.com/cae2bd2e-ef30-41e8-bf78-9645ed9e7fff/20398700-de20-45b5-b475-463adb0296cc.png"
+             alt="X Series logo"
+            >
+        <span class="intro-caption">A Part of XSeries by Abdullah Dev Studio</span>
+      </div>
+
+      <!-- 3. Current project: TaskX (image) -->
+      <div id="logo-project" class="logo-item">
+        <img src="https://i.supaimg.com/cae2bd2e-ef30-41e8-bf78-9645ed9e7fff/4e71b8ba-6851-4b34-9e26-c625462fd24a.png"
+             alt="TaskX logo"
+            >
+      </div>
+    </div>
+  </div>
+
+  <!-- SKIP INTRO BUTTON -->
+  <button id="skip-intro" aria-label="Skip intro">Skip</button>
+
+  <script>
+    (function() {
+      "use strict";
+
+      const overlay = document.getElementById('intro-overlay');
+      const skipBtn = document.getElementById('skip-intro');
+
+      const adLogo = document.getElementById('logo-ad');
+      const xLogo = document.getElementById('logo-xseries');
+      const projectLogo = document.getElementById('logo-project');
+
+      let activeTimers = [];
+      let isSkipped = false;
+      let isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function clearAllTimers() {
+        activeTimers.forEach(t => clearTimeout(t));
+        activeTimers = [];
+      }
+
+      function setActiveLogo(logoElement) {
+        [adLogo, xLogo, projectLogo].forEach(el => el.classList.remove('active'));
+        if (logoElement) logoElement.classList.add('active');
+      }
+
+      function skipIntro() {
+        if (isSkipped) return;
+        isSkipped = true;
+        clearAllTimers();
+        window.location.replace('./index.html');
+      }
+
+      function startIntro() {
+        if (isReducedMotion) {
+          setActiveLogo(null);
+          projectLogo.classList.add('active');
+          overlay.style.opacity = '1';
+          const t = setTimeout(() => {
+            if (!isSkipped) {
+              window.location.replace('./index.html');
+            }
+          }, 400);
+          activeTimers.push(t);
+          return;
+        }
+
+        // 0.00 – 0.40s: black
+        // 0.40 – 1.00s: fade in AD
+        const t1 = setTimeout(() => {
+          if (isSkipped) return;
+          setActiveLogo(adLogo);
+        }, 400);
+
+        // 1.70 – 2.20s: fade out AD
+        const t2 = setTimeout(() => {
+          if (isSkipped) return;
+          adLogo.classList.remove('active');
+        }, 1700);
+
+        // 2.20 – 2.70s: fade in X Series
+        const t3 = setTimeout(() => {
+          if (isSkipped) return;
+          setActiveLogo(xLogo);
+        }, 2200);
+
+        // 3.90 – 4.40s: fade out X
+        const t4 = setTimeout(() => {
+          if (isSkipped) return;
+          xLogo.classList.remove('active');
+        }, 3900);
+
+        // 4.80 – 5.30s: fade in project
+        const t5 = setTimeout(() => {
+          if (isSkipped) return;
+          setActiveLogo(projectLogo);
+        }, 4800);
+
+        // 6.30 – 6.70s: fade out project, reveal
+        const t6 = setTimeout(() => {
+          if (isSkipped) return;
+          projectLogo.classList.remove('active');
+          const t7 = setTimeout(() => {
+            if (!isSkipped) {
+              window.location.replace('./index.html');
+            }
+          }, 400);
+          activeTimers.push(t7);
+        }, 6300);
+
+        activeTimers.push(t1, t2, t3, t4, t5, t6);
+      }
+
+      // --- attach skip ---
+      skipBtn.addEventListener('click', skipIntro);
+      skipBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          skipIntro();
+        }
+      });
+
+      // --- reduced motion ---
+      const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      motionQuery.addEventListener('change', (e) => {
+        isReducedMotion = e.matches;
+      });
+
+      // --- init ---
+      overlay.classList.remove('hidden');
+      overlay.setAttribute('aria-hidden', 'false');
+      setActiveLogo(null);
+
+      const startDelay = setTimeout(() => {
+        if (!isSkipped) startIntro();
+      }, 100);
+      activeTimers.push(startDelay);
+
+      // Expose skip function for optional external use
+      window.skipIntro = skipIntro;
+    })();
+  </script>
+</body>
+</html>

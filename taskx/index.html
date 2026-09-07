@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TaskX — Log in or sign up</title>
+<meta name="description" content="Log in to TaskX to manage your tasks in real time. A part of X Series by Abdullah Dev Studio." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="./css/style.css" />
+<link rel="icon" href="/favicon.png" type="image/png" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="./js/tailwind-config.js"></script>
+</head>
+<body data-page="auth" class="font-sans antialiased transition-colors duration-300">
+
+<!-- Toasts -->
+<div id="toast-host" class="pointer-events-none fixed inset-x-0 top-4 z-[60] mx-auto flex w-full max-w-sm flex-col items-center gap-2 px-4"></div>
+
+<!-- ============================== AUTH PAGE ============================== -->
+<section id="view-auth" class="hidden min-h-screen items-center justify-center px-4 py-12">
+  <div class="w-full max-w-md rise">
+    <div class="mb-6 flex items-center justify-center gap-1.5">
+      <button id="lang-toggle" type="button" title="Language"
+        class="rounded-lg border border-line px-2.5 py-1.5 text-xs font-medium text-muted transition hover:border-accent hover:text-txt">
+        <span id="lang-label">EN</span>
+      </button>
+      <button id="theme-toggle" type="button" title="Toggle theme"
+        class="rounded-lg border border-line p-2 text-muted transition hover:border-accent hover:text-txt">
+        <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        <svg id="icon-sun" class="hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </button>
+    </div>
+
+    <div class="mb-8 text-center">
+      <img data-logo src="./assets/logo.png" alt="Abdullah Dev Studio logo" class="mx-auto mb-3 h-12 w-12 object-contain" />
+      <h1 class="font-display text-3xl font-bold">TaskX</h1>
+      <p class="mt-1 text-sm text-muted" data-i18n="tagline">A part of X Series by Abdullah Dev Studio</p>
+    </div>
+
+    <div class="rounded-2xl border border-line bg-surface p-6 shadow-xl shadow-black/5 sm:p-8">
+      <h2 id="auth-title" class="font-display text-xl font-semibold">Welcome back</h2>
+      <p id="auth-sub" class="mt-1 text-sm text-muted">Log in to continue to your tasks.</p>
+
+      <form id="auth-form" class="mt-6 space-y-4" novalidate>
+        <div id="field-username" class="hidden">
+          <label for="username" class="mb-1.5 block text-sm font-medium" data-i18n="username">Username</label>
+          <input id="username" type="text" placeholder="abdullah.dev" autocomplete="username"
+            class="w-full rounded-xl border border-line bg-bg px-3.5 py-2.5 text-sm outline-none transition placeholder:text-muted/70 focus:border-accent" />
+        </div>
+        <div>
+          <label for="email" class="mb-1.5 block text-sm font-medium" data-i18n="email">Email</label>
+          <input id="email" type="email" placeholder="you@example.com" autocomplete="email"
+            class="w-full rounded-xl border border-line bg-bg px-3.5 py-2.5 text-sm outline-none transition placeholder:text-muted/70 focus:border-accent" />
+        </div>
+        <div>
+          <label for="password" class="mb-1.5 block text-sm font-medium" data-i18n="password">Password</label>
+          <div class="relative">
+            <input id="password" type="password" placeholder="••••••••" autocomplete="current-password"
+              class="w-full rounded-xl border border-line bg-bg px-3.5 py-2.5 pe-11 text-sm outline-none transition placeholder:text-muted/70 focus:border-accent" />
+            <button id="password-toggle" type="button" aria-label="Show password" aria-pressed="false"
+              class="absolute inset-y-0 end-0 flex items-center px-3 text-muted transition hover:text-accent">
+              <svg id="icon-eye" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg id="icon-eye-off" class="hidden" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.19M6.6 6.6A17.7 17.7 0 0 0 2 11s3.6 7 10 7a9 9 0 0 0 4.4-1.1"/><path d="m1 1 22 22"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <p id="auth-error" class="hidden rounded-xl border border-red-500/40 bg-red-500/10 px-3.5 py-2.5 text-sm text-red-500"></p>
+
+        <div id="verify-box" class="hidden rounded-xl border border-accent/40 bg-accent/10 px-3.5 py-3 text-sm">
+          <p id="verify-msg" class="text-txt"></p>
+          <button id="resend-btn" type="button"
+            class="mt-2 rounded-lg border border-line px-3 py-1.5 text-xs font-medium text-txt transition hover:border-accent hover:text-accent">
+            Resend verification email
+          </button>
+        </div>
+
+        <button id="auth-submit" type="submit"
+          class="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 font-display text-sm font-semibold text-white transition hover:bg-accenth disabled:cursor-not-allowed">
+          <span id="auth-spinner" class="hidden h-4 w-4 spinner border-white/40 border-t-white"></span>
+          <span id="auth-submit-label">Log in</span>
+        </button>
+      </form>
+
+      <div class="my-5 flex items-center gap-3">
+        <span class="h-px flex-1 bg-line"></span>
+        <span class="text-xs text-muted">or</span>
+        <span class="h-px flex-1 bg-line"></span>
+      </div>
+
+      <button id="google-btn" type="button"
+        class="flex w-full items-center justify-center gap-2.5 rounded-xl border border-line bg-bg px-4 py-2.5 text-sm font-medium text-txt transition hover:border-accent">
+        <span id="google-spinner" class="hidden h-4 w-4 spinner"></span>
+        <svg id="google-icon" width="17" height="17" viewBox="0 0 48 48" aria-hidden="true">
+          <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.1 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.3 17.7 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.1 24.6c0-1.6-.1-3.1-.4-4.6H24v9.1h12.4c-.5 2.9-2.1 5.3-4.6 6.9l7.1 5.5c4.2-3.8 6.6-9.5 6.6-16.2z"/>
+          <path fill="#FBBC05" d="M10.4 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6.1C.9 16.3 0 20 0 24s.9 7.7 2.6 10.8l7.8-6.1z"/>
+          <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.1-5.5c-2 1.3-4.6 2.1-8.8 2.1-6.3 0-11.7-3.8-13.6-9.1l-7.8 6.1C6.5 42.6 14.6 48 24 48z"/>
+        </svg>
+        <span id="google-label">Continue with Google</span>
+      </button>
+
+      <p class="mt-6 text-center text-sm text-muted">
+        <span id="auth-switch-text">Don't have an account?</span>
+        <button id="auth-toggle" type="button" class="ml-1 font-medium text-txt underline underline-offset-4 transition hover:text-accent">Sign up</button>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== GOOGLE USERNAME MODAL ===================== -->
+<div id="gname-modal" class="fixed inset-0 z-[70] hidden items-center justify-center bg-black/60 px-4">
+  <div class="w-full max-w-sm rounded-2xl border border-line bg-surface p-6 shadow-xl">
+    <h3 class="font-display text-lg font-semibold">Choose a username</h3>
+    <p class="mt-1 text-sm text-muted">We'll use your Google email for this account.</p>
+    <p id="gname-email" class="mt-2 truncate text-sm font-medium text-txt"></p>
+    <input id="gname-input" type="text" placeholder="abdullah.dev" autocomplete="username"
+      class="mt-4 w-full rounded-xl border border-line bg-bg px-3.5 py-2.5 text-sm outline-none transition placeholder:text-muted/70 focus:border-accent" />
+    <p id="gname-error" class="mt-2 hidden text-sm text-red-500"></p>
+    <div class="mt-5 flex gap-2">
+      <button id="gname-cancel" type="button"
+        class="flex-1 rounded-xl border border-line px-4 py-2.5 text-sm font-medium text-muted transition hover:border-accent hover:text-txt">Cancel</button>
+      <button id="gname-save" type="button"
+        class="flex-1 rounded-xl bg-accent px-4 py-2.5 font-display text-sm font-semibold text-white transition hover:bg-accenth">Continue</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>

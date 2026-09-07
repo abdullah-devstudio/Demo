@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TaskX Dashboard — Your tasks</title>
+<meta name="description" content="Add, edit, complete and filter your tasks in real time with TaskX. A part of X Series by Abdullah Dev Studio." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="./css/style.css" />
+<link rel="icon" href="/favicon.png" type="image/png" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="./js/tailwind-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body data-page="dashboard" class="font-sans antialiased transition-colors duration-300">
+
+<div id="toast-host" class="pointer-events-none fixed inset-x-0 top-4 z-[60] mx-auto flex w-full max-w-sm flex-col items-center gap-2 px-4"></div>
+
+<div class="flex min-h-screen flex-col">
+
+  <!-- ---- Navbar ---- -->
+  <header class="sticky top-0 z-30 border-b border-line bg-bg/80 backdrop-blur">
+    <nav class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3.5 sm:px-6">
+      <a href="./dashboard.html" class="flex items-center gap-2">
+        <span class="flex h-8 w-8 items-center justify-center rounded-lg border border-line bg-surface">
+          <img data-logo src="./assets/logo.png" alt="Abdullah Dev Studio logo" class="h-5 w-5 object-contain" />
+        </span>
+        <span class="font-display text-lg font-semibold tracking-tight">TaskX</span>
+      </a>
+
+      <div class="flex items-center gap-1.5">
+        <span id="user-email" class="mr-1 hidden max-w-[12rem] truncate text-xs text-muted sm:inline"></span>
+        <button id="lang-toggle" type="button" title="Language"
+          class="rounded-lg border border-line px-2.5 py-1.5 text-xs font-medium text-muted transition hover:border-accent hover:text-txt">
+          <span id="lang-label">EN</span>
+        </button>
+        <button id="theme-toggle" type="button" title="Toggle theme"
+          class="rounded-lg border border-line p-2 text-muted transition hover:border-accent hover:text-txt">
+          <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          <svg id="icon-sun" class="hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ---- Main ---- -->
+  <main class="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6 sm:py-10">
+
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <h1 class="font-display text-2xl font-bold tracking-tight sm:text-3xl" data-i18n="myTasks">My Tasks</h1>
+        <p id="summary" class="mt-1.5 text-sm text-muted" data-i18n="noTasks">No tasks yet</p>
+      </div>
+      <button id="logout-btn" type="button" class="flex items-center gap-1.5 rounded-lg border border-line px-3 py-2 text-xs font-medium text-muted transition hover:border-accent hover:text-txt">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span data-i18n="logout">Log out</span>
+      </button>
+    </div>
+
+    <!-- Task input -->
+    <form id="task-form" class="mt-6 rounded-2xl border border-line bg-surface p-3 shadow-sm sm:p-4">
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <input id="task-input" type="text" data-i18n-placeholder="placeholder" placeholder="What needs to be done?"
+          class="min-w-0 flex-1 rounded-xl border border-line bg-bg px-3.5 py-2.5 text-sm outline-none transition placeholder:text-muted/70 focus:border-accent" />
+        <input id="task-date" type="date"
+          class="rounded-xl border border-line bg-bg px-3.5 py-2.5 text-sm text-muted outline-none transition focus:border-accent sm:w-44" />
+        <button id="add-btn" type="submit"
+          class="flex items-center justify-center gap-1.5 rounded-xl bg-accent px-5 py-2.5 font-display text-sm font-semibold text-white transition hover:bg-accenth disabled:opacity-60">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span data-i18n="add">Add</span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Filters + sort -->
+    <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
+      <div id="filters" class="flex flex-wrap gap-2">
+        <button data-filter="all" class="filter-btn rounded-lg border border-line px-3.5 py-1.5 text-sm font-medium transition" data-i18n="all">All</button>
+        <button data-filter="pending" class="filter-btn rounded-lg border border-line px-3.5 py-1.5 text-sm font-medium transition" data-i18n="pending">Pending</button>
+        <button data-filter="completed" class="filter-btn rounded-lg border border-line px-3.5 py-1.5 text-sm font-medium transition" data-i18n="completed">Completed</button>
+      </div>
+      <select id="sort-select"
+        class="rounded-lg border border-line bg-surface px-3 py-1.5 text-sm text-muted outline-none transition focus:border-accent">
+        <option value="created" data-i18n="sortCreated">Newest first</option>
+        <option value="due" data-i18n="sortDue">Due date</option>
+      </select>
+    </div>
+
+    <!-- Loading state -->
+    <div id="list-loading" class="mt-5 flex items-center justify-center gap-3 rounded-2xl border border-line bg-surface/50 py-16 text-sm text-muted">
+      <span class="h-5 w-5 spinner"></span>
+      Loading tasks…
+    </div>
+
+    <!-- Task list -->
+    <ul id="task-list" class="mt-5 space-y-3"></ul>
+
+    <!-- Empty state -->
+    <div id="empty-state" class="mt-5 hidden rounded-2xl border border-dashed border-line bg-surface/50 px-6 py-16 text-center">
+      <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-line bg-surface text-muted">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      </div>
+      <h3 id="empty-title" class="font-display text-base font-semibold">Nothing here yet</h3>
+      <p id="empty-sub" class="mx-auto mt-1.5 max-w-xs text-sm text-muted">Add your first task above and it will show up right here.</p>
+    </div>
+  </main>
+
+  <footer class="border-t border-line py-6 text-center text-xs text-muted" data-i18n="footer">
+    TaskX — A part of X Series by Abdullah Dev Studio
+  </footer>
+</div>
+
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>
